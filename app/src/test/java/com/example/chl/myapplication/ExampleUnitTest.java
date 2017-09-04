@@ -1,4 +1,4 @@
-package com.example.chenhailin.myapplication;
+package com.example.chl.myapplication;
 
 import org.junit.Test;
 

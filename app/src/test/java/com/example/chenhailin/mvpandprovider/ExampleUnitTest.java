@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication;
+package com.example.chenhailin.mvpandprovider;
 
 import org.junit.Test;
 

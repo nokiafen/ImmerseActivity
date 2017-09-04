@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication;
+package com.example.chl.mvp;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -6,16 +6,30 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.example.chl.myapplication.R;
 
 //http://www.cnblogs.com/zimengfang/p/5707656.html  来源
 //http://www.mamicode.com/info-detail-982567.html  来源
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  implements  IMainView, View.OnClickListener{
+
+    private IMainPComp iMainPComp;
+    private EditText edAccount;
+    private EditText edPassword;
+    private AppCompatButton btLogin;
+    private AppCompatCheckBox autoLogin;
+    private AppCompatCheckBox remeberPass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +41,30 @@ public class MainActivity extends AppCompatActivity {
 //        style  实现----------http://www.jianshu.com/p/3e73c372b7ce  --注意设置边距
         if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT)
         { setStatusBarPadding();}//注意设置边距  安卓4.4以上才可以控制状态栏
+
+        init();
+    }
+
+    private void init() {
+        iMainPComp=new IMainPComp(this);
+        edAccount= (EditText) findViewById(R.id.account);
+        edPassword= (EditText) findViewById(R.id.password);
+        btLogin= (AppCompatButton) findViewById(R.id.btLogin);
+        autoLogin= (AppCompatCheckBox) findViewById(R.id.autoLogin);
+        remeberPass= (AppCompatCheckBox) findViewById(R.id.remberPass);
+        btLogin.setOnClickListener(this);
+        autoLogin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                iMainPComp.isAutoLogin(autoLogin.isChecked());
+            }
+        });
+        remeberPass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                iMainPComp.isAutoLogin(remeberPass.isChecked());
+            }
+        });
     }
 
     private void setStatusBarPadding() {
@@ -87,4 +125,34 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case  R.id.autoLogin:
+                iMainPComp.isAutoLogin(autoLogin.isChecked());
+                break;
+            case  R.id.remberPass:
+                iMainPComp.rememberPassword(remeberPass.isChecked());
+                break;
+            case  R.id.btLogin:
+                iMainPComp.login(edAccount.getText().toString(),edPassword.getText().toString());
+                break;
+        }
+    }
+
+
+    @Override
+    public void onAutoLogin(boolean isChecked) {
+        Snackbar.make(edAccount,"autoLogin"+isChecked,Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRemeberpassWord(boolean isChecked) {
+        Snackbar.make(edAccount,"remeberPassroid"+isChecked,Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLogin(LoginResult result) {
+        Snackbar.make(edAccount,""+result.getMsg(),Snackbar.LENGTH_SHORT).show();
+    }
 }

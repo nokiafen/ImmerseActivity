@@ -1,4 +1,4 @@
-package com.example.chenhailin.myapplication;
+package com.example.chenhailin.mvpandprovider;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
